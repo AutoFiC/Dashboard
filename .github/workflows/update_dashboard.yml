@@ -1,0 +1,11 @@
+name: Update Dashboard
+
+on:
+  workflow_dispatch:  # 반드시 있어야 함!
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull latest results
+        run: echo "Pulling new data and updating dashboard..."
