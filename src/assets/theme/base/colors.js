@@ -58,7 +58,7 @@ export default {
 
   primary: {
     main: "#4318ff",
-    focus: "#9f7aea",
+    focus: "#4c6fff",
   },
 
   secondary: {
@@ -436,5 +436,11 @@ export default {
 
   tabs: {
     indicator: { boxShadow: "#ddd" },
+  },
+
+  customHeader: {
+  deg: "135deg",
+  main: "#1f254f",
+  state: "#141d42",
   },
 };

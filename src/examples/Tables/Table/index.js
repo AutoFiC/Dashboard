@@ -72,7 +72,7 @@ function Table({ columns, rows }) {
         textAlign={align}
         fontSize={size.xxs}
         fontWeight={fontWeightBold}
-        color="text"
+        color="white"
         opacity={0.7}
         borderBottom={`${borderWidth[1]} solid ${grey[700]}`}
       >
@@ -122,7 +122,7 @@ function Table({ columns, rows }) {
             <VuiTypography
               variant="button"
               fontWeight="regular"
-              color="text"
+              color="white"
               sx={{ display: "inline-block", width: "max-content" }}
             >
               {row[name]}

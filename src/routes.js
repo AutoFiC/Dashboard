@@ -40,6 +40,7 @@
 
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
+import AnalysisDetails from "layouts/analysis";
 
 import { IoHome } from "react-icons/io5";
 import { IoStatsChart } from "react-icons/io5";
@@ -61,6 +62,15 @@ const routes = [
     route: "/tables",
     icon: <IoStatsChart size="15px" color="inherit" />,
     component: Tables,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Analysis",
+    key: "analysis",
+    route: "/analysis",
+    icon: <IoAnalytics size="15px" color="inherit" />,
+    component: AnalysisDetails,
     noCollapse: true,
   },
 ];
