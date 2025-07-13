@@ -37,13 +37,11 @@
   10. The `title` key is only for the item with the type of `title` and its used for the title text on the Sidenav.
   10. The `component` key is used to store the component of its route.
 */
-
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import AnalysisDetails from "layouts/analysis";
 
-import { IoHome } from "react-icons/io5";
-import { IoStatsChart } from "react-icons/io5";
+import { IoHome, IoStatsChart, IoAnalytics } from "react-icons/io5";
 
 const routes = [
   {
