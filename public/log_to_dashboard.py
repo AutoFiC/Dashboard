@@ -57,7 +57,7 @@ class DashboardBuilder:
         top3 = [t for t, _ in class_counter.most_common(3)]
 
         return {
-            "repoCount": len(repos)
+            "repoCount": len(repos),
             "vulnerabilityStats":{
                 "totalCount": total_vuln_count,
                 "byClass": byClass,
