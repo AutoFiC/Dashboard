@@ -58,11 +58,11 @@ class DashboardBuilder:
 
         return {
             "repoCount": len(repos),
-            "vulnerabilityStats":{
+            "vulnerabilityStats": {
                 "totalCount": total_vuln_count,
                 "byClass": byClass,
                 "top3": top3
-            }
+            },
             "prCount": {
                 "total": pr_total,
                 "daily": pr_daily,
