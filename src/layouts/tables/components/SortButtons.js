@@ -12,10 +12,45 @@ function SortButtons({ handleSort, sortKey, sortOrder }) {
 
   return (
     <VuiBox display="flex" gap={2} flexWrap="wrap" px={3} py={1}>
-      <VuiButton color="info" size="small" onClick={() => handleSort("vulnerabilities")}> 
+      <VuiButton
+        size="small"
+        onClick={() => handleSort("vulnerabilities")}
+        sx={{
+          backgroundColor: "#2652fb",
+          color: "#fff",
+          fontSize: "0.9rem",
+          fontWeight: "normal !important",
+          minWidth: "130px",                // ✅ 가로 길이
+          height: "30px !important",        // ✅ 세로 길이
+          borderRadius: "10px",
+          padding: "0 12px",
+          textTransform: "none",
+          "&:hover": {
+            backgroundColor: "#3c64fd",
+          },
+        }}
+      >
         Sort by Vulnerabilities{getArrow("vulnerabilities")}
       </VuiButton>
-      <VuiButton color="primary" size="small" onClick={() => handleSort("changes")}> 
+
+      <VuiButton
+        size="small"
+        onClick={() => handleSort("changes")}
+        sx={{
+          backgroundColor: "#4d2ef6",
+          color: "#fff",
+          fontSize: "0.9rem",
+          fontWeight: "normal !important",
+          minWidth: "130px",                // ✅ 가로 길이
+          height: "30px !important",        // ✅ 세로 길이
+          borderRadius: "10px",
+          padding: "0 12px",
+          textTransform: "none",
+          "&:hover": {
+            backgroundColor: "#5c3ffc",
+          },
+        }}
+      >
         Sort by Changes{getArrow("changes")}
       </VuiButton>
     </VuiBox>

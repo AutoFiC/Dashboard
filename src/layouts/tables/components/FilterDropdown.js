@@ -1,3 +1,4 @@
+// FilterDropdown.js
 import React from "react";
 import {
   FormControl,
@@ -18,7 +19,7 @@ function FilterDropdown({ label, value, onChange, options, bgColor = "#1e88e5" }
     >
       <Box
         sx={{
-          color: "#fff",
+          color: "#bbb", // 흐린 텍스트
           fontWeight: "bold",
           fontSize: "0.9rem",
           whiteSpace: "nowrap",
@@ -28,7 +29,7 @@ function FilterDropdown({ label, value, onChange, options, bgColor = "#1e88e5" }
         {label}:
       </Box>
 
-      <FormControl size="small" sx={{ minWidth: 120 }}>
+      <FormControl size="small" sx={{ minWidth: 130 }}>
         <Select
           value={value}
           onChange={onChange}
@@ -37,9 +38,9 @@ function FilterDropdown({ label, value, onChange, options, bgColor = "#1e88e5" }
             sx: {
               backgroundColor: `${bgColor} !important`,
               color: "#fff !important",
-              fontWeight: "bold",
+              fontSize: "0.9rem",
               borderRadius: "10px",
-              height: "36px",
+              height: "30px !important",
               padding: "0 12px",
               "& .MuiSelect-icon": {
                 color: "#fff !important",
@@ -52,6 +53,7 @@ function FilterDropdown({ label, value, onChange, options, bgColor = "#1e88e5" }
                 backgroundColor: "#0d1c3f",
                 color: "#fff",
                 fontWeight: "bold",
+                fontSize: "0.9rem",
               },
             },
           }}
@@ -59,20 +61,24 @@ function FilterDropdown({ label, value, onChange, options, bgColor = "#1e88e5" }
             backgroundColor: `${bgColor} !important`,
             color: "#fff !important",
             borderRadius: "10px",
-            fontWeight: "bold",
-            height: "36px",
+            fontSize: "0.9rem",
+            height: "30px !important",
+            minWidth: "130px",
             "& .MuiSelect-icon": {
               color: "#fff !important",
             },
           }}
         >
           {options.map((option) => (
-            <MenuItem key={option} value={option}
-            sx={{
-            py: 1.2, // 상하 padding
-            px: 2,   // 좌우 padding
-            minHeight: "36px", // 클릭 영역 보장
-        }}
+            <MenuItem
+              key={option}
+              value={option}
+              sx={{
+                py: 1.2,
+                px: 2,
+                minHeight: "30px",
+                fontSize: "0.9rem",
+              }}
             >
               {option}
             </MenuItem>

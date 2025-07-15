@@ -10,6 +10,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MiniStatisticsCard from "examples/Cards/StatisticsCards/MiniStatisticsCard";
 import SatisfactionRate from "layouts/dashboard/components/MergeSuccessRate";
+import StatisticsCards from "layouts/dashboard/components/StatisticsCards";
+
 import linearGradient from "assets/theme/functions/linearGradient";
 import colors from "assets/theme/base/colors";
 
@@ -24,6 +26,7 @@ function Dashboard() {
   const [dailyChartData, setDailyChartData] = useState([]);
   const [prCount, setPrCount] = useState(null);
   const [mergeRate, setMergeRate] = useState(0);
+  const [repoCount, setRepoCount] = useState(null); // ⬅️ 추가
 
   const weeklyChartOptions = {
     chart: { type: "area", toolbar: { show: false } },
@@ -69,6 +72,7 @@ function Dashboard() {
       .then((data) => {
         setPrCount(data.prCount);
         setMergeRate(data.mergeApprovalRate);
+        setRepoCount(data.repoCount); // ⬅️ 추가
 
         setWeeklyChartData([
           {
@@ -87,29 +91,15 @@ function Dashboard() {
       .catch((err) => console.error("dashboard_data.json 로딩 실패:", err));
   }, []);
 
-  if (!prCount) return null;
+  if (!prCount || repoCount === null) return null;
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <VuiBox py={3}>
         <VuiBox mb={3}>
-          <Grid container spacing={3}>
-            {[
-              { title: "Total PRs", count: prCount.total, icon: <span>📦</span> },
-              { title: "Daily PRs", count: prCount.daily, icon: <span>📅</span> },
-              { title: "Weekly PRs", count: prCount.weekly, icon: <span>📈</span> },
-            ].map((item, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
-                <MiniStatisticsCard
-                  title={{ text: item.title }}
-                  count={item.count}
-                  percentage={{ color: "success", text: "+0%" }}
-                  icon={{ color: "info", component: item.icon }}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {/* ✅ PR 카드 + Repo 카드 */}
+          <StatisticsCards prCount={prCount} repoCount={repoCount} />
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} sm={6} md={3}>

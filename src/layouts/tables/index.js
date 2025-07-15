@@ -130,13 +130,14 @@ function Tables() {
                 value={selectedTool}
                 options={["All", "Semgrep", "CodeQL", "Snyk Code", "ESLint"]}
                 onChange={(e) => setSelectedTool(e.target.value)}
-              
+                bgColor="rgb(87,68,236)"
               />
               <FilterDropdown
                 label="Rerun"
                 value={selectedRerun}
                 options={["All", "Yes", "No"]}
                 onChange={(e) => setSelectedRerun(e.target.value)}
+                bgColor="rgb(108,70,206)"
               />
             </VuiBox>
 
