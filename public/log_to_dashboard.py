@@ -1,7 +1,8 @@
+import os
 import requests
 import json
 from datetime import datetime, timedelta
-import os
+from collections import Counter
 
 class DashboardBuilder:
     def __init__(self, api_url, dashboard_path=None):
@@ -21,33 +22,53 @@ class DashboardBuilder:
         today = datetime.now().date()
         week_ago = today - timedelta(days=7)
 
+        repos = logs.get("repos",[])
+        prs = logs.get("prs",[])
+
         # PR 카운트 
-        pr_daily = sum(1 for p in logs.get("prs", []) if p["date"] == str(today))
-        pr_weekly = sum(1 for p in logs.get("prs", []) if datetime.fromisoformat(p["date"]).date() >= week_ago)
-        pr_total = len(logs.get("prs", []))
+        pr_daily = sum(1 for p in prs if p["date"] == str(today))
+        pr_weekly = sum(1 for p in prs if datetime.fromisoformat(p["date"]).date() >= week_ago)
+        pr_total = len(prs)
 
         # Charts - dailyPRs 데이터
         daily_counts = {}
-        for pr in logs.get("prs",[]):
+        for pr in prs:
             date = pr["date"]
             daily_counts[date] = daily_counts.get(date, 0) + 1
         dailyPRs = [{"x": d, "y": daily_counts[d]} for d in sorted(daily_counts)]
         
         # Charts - weeklyPRs 데이터
         weekly_counts = {}
-        for pr in logs.get("prs", []):
+        for pr in prs:
             dt = datetime.fromisoformat(pr["date"])
             week_label = f"{dt.strftime('%b')} {dt.day // 7 + 1}nd week"
             weekly_counts[week_label] = weekly_counts.get(week_label, 0) + 1
         weeklyPRs = [{"x": k, "y": v} for k, v in sorted(weekly_counts.items())]
 
+        total_vuln_count = 0
+        class_counter = Counter()
+
+        for repo in repos:
+            total_vuln_count += repo.get("vulnearabilities", 0)
+            for cls in repo.get("byClass", []):
+                class_counter[cls["type"]] += cls["count"]
+
+        byClass = [{"type": k, "count": v} for k, v in class_counter.items()]
+        top3 = [t for t, _ in class_counter.most_common(3)]
+
         return {
+            "repoCount": len(repos)
+            "vulnerabilityStats":{
+                "totalCount": total_vuln_count,
+                "byClass": byClass,
+                "top3": top3
+            }
             "prCount": {
                 "total": pr_total,
                 "daily": pr_daily,
                 "weekly": pr_weekly
             },
-            "repos": logs.get("repos", []),
+            "repos": repos,
             "charts": {
                 "dailyPRs": dailyPRs,
                 "weeklyPRs": weeklyPRs
@@ -72,4 +93,3 @@ if __name__ == "__main__":
     api_url = os.getenv("LOG_API_URL")
     builder = DashboardBuilder(api_url)
     builder.run()
-
