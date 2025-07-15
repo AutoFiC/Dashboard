@@ -44,12 +44,12 @@ function Tables() {
             rerun: repo.rerun ? "Yes" : "No",
             url: (
               <a
-                href={repo.url}
+                href={repo.repo_url}
                 target="_blank"
                 rel="noreferrer"
                 style={{ color: "#5e72e4", wordBreak: "break-all" }}
               >
-                {repo.url}
+                {repo.repo_url}
               </a>
             ),
           }))

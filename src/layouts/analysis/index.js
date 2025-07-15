@@ -35,7 +35,7 @@ function Analysis() {
     const cleanedUrl = url.trim();
     if (!dashboardData || !dashboardData.repos) return;
 
-    const match = dashboardData.repos.find((repo) => repo.url === cleanedUrl);
+    const match = dashboardData.repos.find((repo) => repo.repo_url === cleanedUrl);
     setSelectedRepo(match || null);
   };
 
