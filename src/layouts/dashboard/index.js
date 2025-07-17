@@ -8,15 +8,16 @@ import VuiTypography from "components/VuiTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import MiniStatisticsCard from "examples/Cards/StatisticsCards/MiniStatisticsCard";
-import SatisfactionRate from "layouts/dashboard/components/MergeSuccessRate";
-import StatisticsCards from "layouts/dashboard/components/StatisticsCards";
 
-import linearGradient from "assets/theme/functions/linearGradient";
-import colors from "assets/theme/base/colors";
+import StatisticsCards from "layouts/dashboard/components/StatisticsCards";
+import SatisfactionRate from "layouts/dashboard/components/MergeSuccessRate";
+import VulnerabilityOverview from "layouts/dashboard/components/VulnerabilityOverview";
 
 import LineChart from "examples/Charts/LineCharts/LineChart";
 import BarChart from "examples/Charts/BarCharts/BarChart";
+
+import linearGradient from "assets/theme/functions/linearGradient";
+import colors from "assets/theme/base/colors";
 
 function Dashboard() {
   const { gradients } = colors;
@@ -26,7 +27,8 @@ function Dashboard() {
   const [dailyChartData, setDailyChartData] = useState([]);
   const [prCount, setPrCount] = useState(null);
   const [mergeRate, setMergeRate] = useState(0);
-  const [repoCount, setRepoCount] = useState(null); // ⬅️ 추가
+  const [repoCount, setRepoCount] = useState(null);
+  const [vulnStats, setVulnStats] = useState(null);
 
   const weeklyChartOptions = {
     chart: { type: "area", toolbar: { show: false } },
@@ -72,7 +74,8 @@ function Dashboard() {
       .then((data) => {
         setPrCount(data.prCount);
         setMergeRate(data.mergeApprovalRate);
-        setRepoCount(data.repoCount); // ⬅️ 추가
+        setRepoCount(data.repoCount);
+        setVulnStats(data.vulnerabilityStats);
 
         setWeeklyChartData([
           {
@@ -88,22 +91,24 @@ function Dashboard() {
           },
         ]);
       })
-      .catch((err) => console.error("dashboard_data.json 로딩 실패:", err));
+      .catch((err) => console.error("Failed to load dashboard_data.json:", err));
   }, []);
 
-  if (!prCount || repoCount === null) return null;
+  if (!prCount || repoCount === null || vulnStats === null) return null;
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <VuiBox py={3}>
         <VuiBox mb={3}>
-          {/* ✅ PR 카드 + Repo 카드 */}
           <StatisticsCards prCount={prCount} repoCount={repoCount} />
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} sm={6} md={3}>
               <SatisfactionRate rate={mergeRate} />
+            </Grid>
+            <Grid item xs={12} sm={6} md={9}>
+              <VulnerabilityOverview stats={vulnStats} />
             </Grid>
           </Grid>
         </VuiBox>
