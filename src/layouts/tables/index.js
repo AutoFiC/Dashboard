@@ -7,12 +7,15 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 import VuiPagination from "components/VuiPagination";
-import SortButtons from "layouts/tables/components/SortButtons";
-import FilterDropdown from "layouts/tables/components/FilterDropdown";
+import SortButtons from "./components/SortButtons";
+import FilterDropdown from "./components/FilterDropdown";
+import SearchInput from "examples/SearchInput";
+import AnalysisModal from "./components/AnalysisModal";
 
 function Tables() {
   const [repoColumns, setRepoColumns] = useState([]);
   const [repoRows, setRepoRows] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -21,6 +24,11 @@ function Tables() {
 
   const [selectedTool, setSelectedTool] = useState("All");
   const [selectedRerun, setSelectedRerun] = useState("All");
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [selectedRepoForModal, setSelectedRepoForModal] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/dashboard_data.json`)
@@ -35,25 +43,40 @@ function Tables() {
           { name: "url", align: "left", width: "40%" },
         ]);
 
-        setRepoRows(
-          data.repos.map((repo) => ({
-            name: repo.name,
-            vulnerabilities: repo.vulnerabilities,
-            changes: repo.changes,
-            sastTool: repo.sastTool || "N/A",
-            rerun: repo.rerun ? "Yes" : "No",
-            url: (
-              <a
-                href={repo.repo_url}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "#5e72e4", wordBreak: "break-all" }}
-              >
-                {repo.repo_url}
-              </a>
-            ),
-          }))
-        );
+        const rows = data.repos.map((repo) => ({
+          ...repo,
+          name: (
+            <span
+              style={{
+                color: "#5e72e4",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+              onClick={() => {
+                setSelectedRepoForModal(repo);
+                setIsModalOpen(true);
+              }}
+            >
+              {repo.name}
+            </span>
+          ),
+          changes: repo.changes || "-",
+          sastTool: repo.sastTool || "N/A",
+          rerun: repo.rerun ? "Yes" : "No",
+          url: (
+            <a
+              href={repo.repo_url}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#5e72e4", wordBreak: "break-all" }}
+            >
+              {repo.repo_url}
+            </a>
+          ),
+        }));
+
+        setRepoRows(rows);
+        setOriginalData(rows);
       })
       .catch((err) => console.error("dashboard_data.json 로드 실패:", err));
   }, []);
@@ -65,6 +88,19 @@ function Tables() {
       setSortKey(key);
       setSortOrder("desc");
     }
+  };
+
+  const handleSearch = () => {
+    const query = searchQuery.trim().toLowerCase();
+    const filtered = originalData.filter(
+      (row) =>
+        typeof row.name === "string" &&
+        (row.name.toLowerCase().includes(query) ||
+          row.owner.toLowerCase().includes(query) ||
+          row.repo_url.toLowerCase().includes(query))
+    );
+    setRepoRows(filtered);
+    setCurrentPage(1);
   };
 
   const filteredRows = repoRows.filter((row) => {
@@ -113,6 +149,16 @@ function Tables() {
               <VuiTypography variant="lg" color="white">
                 Repositories Table
               </VuiTypography>
+            </VuiBox>
+
+            {/* 검색창 */}
+            <VuiBox px={3} py={1}>
+              <SearchInput
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onSearch={handleSearch}
+                placeholder="Search by repo name, owner, or URL"
+              />
             </VuiBox>
 
             {/* 정렬 및 필터 */}
@@ -168,6 +214,11 @@ function Tables() {
         </VuiBox>
       </VuiBox>
       <Footer />
+      <AnalysisModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        repo={selectedRepoForModal}
+      />
     </DashboardLayout>
   );
 }
