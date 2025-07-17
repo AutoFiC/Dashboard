@@ -16,7 +16,7 @@ function Tables() {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  const [sortKey, setSortKey] = useState(null);
+  const [sortKey, setSortKey] = useState("updates");
   const [sortOrder, setSortOrder] = useState("desc");
 
   const [selectedTool, setSelectedTool] = useState("All");
@@ -29,7 +29,7 @@ function Tables() {
         setRepoColumns([
           { name: "name", align: "left", width: "15%" },
           { name: "vulnerabilities", align: "center", width: "10%" },
-          { name: "changes", align: "center", width: "10%" },
+          { name: "updates", align: "center", width: "15%" },
           { name: "sastTool", align: "center", width: "15%" },
           { name: "rerun", align: "center", width: "10%" },
           { name: "url", align: "left", width: "40%" },
@@ -39,7 +39,16 @@ function Tables() {
           data.repos.map((repo) => ({
             name: repo.name,
             vulnerabilities: repo.vulnerabilities,
-            changes: repo.changes,
+            updates: repo.updates
+              ? new Date(repo.updates).toLocaleString(undefined, {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                }).replace(",", "")
+              : "",
             sastTool: repo.sastTool || "N/A",
             rerun: repo.rerun ? "Yes" : "No",
             url: (
@@ -75,6 +84,13 @@ function Tables() {
 
   const sortedRows = [...filteredRows].sort((a, b) => {
     if (!sortKey) return 0;
+
+    if (sortKey === "updates") {
+    const dateA = new Date(a.updates || "1970-01-01");
+    const dateB = new Date(b.updates || "1970-01-01");
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }
+
     const valA = Number(a[sortKey]);
     const valB = Number(b[sortKey]);
     return sortOrder === "asc" ? valA - valB : valB - valA;
