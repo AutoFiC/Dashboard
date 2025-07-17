@@ -24,16 +24,19 @@ class DashboardBuilder:
 
         repos = logs.get("repos",[])
         prs = logs.get("prs",[])
+        latest_updates = {}
+        total_vuln_count = 0
+        class_counter = Counter()
 
         # PR 카운트 
-        pr_daily = sum(1 for p in prs if p["date"] == str(today))
+        pr_daily = sum(1 for p in prs if datetime.fromisoformat(p["date"]).date() == today)
         pr_weekly = sum(1 for p in prs if datetime.fromisoformat(p["date"]).date() >= week_ago)
         pr_total = len(prs)
 
         # Charts - dailyPRs 데이터
         daily_counts = {}
         for pr in prs:
-            date = pr["date"]
+            date = datetime.fromisoformat(pr["date"]).date().isoformat()
             daily_counts[date] = daily_counts.get(date, 0) + 1
         dailyPRs = [{"x": d, "y": daily_counts[d]} for d in sorted(daily_counts)]
         
@@ -43,18 +46,31 @@ class DashboardBuilder:
             dt = datetime.fromisoformat(pr["date"])
             week_label = f"{dt.strftime('%b')} {dt.day // 7 + 1}nd week"
             weekly_counts[week_label] = weekly_counts.get(week_label, 0) + 1
+
         weeklyPRs = [{"x": k, "y": v} for k, v in sorted(weekly_counts.items())]
 
-        total_vuln_count = 0
-        class_counter = Counter()
-
         for repo in repos:
-            total_vuln_count += repo.get("vulnearabilities", 0)
+            total_vuln_count += repo.get("vulnerabilities", 0)
             for cls in repo.get("byClass", []):
                 class_counter[cls["type"]] += cls["count"]
 
         byClass = [{"type": k, "count": v} for k, v in class_counter.items()]
         top3 = [t for t, _ in class_counter.most_common(3)]
+
+        for pr in prs:
+            repo_hash = pr.get("repo_hash")
+            if not repo_hash:
+                continue
+            date = datetime.fromisoformat(pr["date"])
+            if repo_hash not in latest_updates or date > latest_updates[repo_hash]:
+                latest_updates[repo_hash] = date
+
+        # 2. 각 repo에 updates 추가
+        for repo in repos:
+            repo_hash = repo.get("repo_hash")
+            if repo_hash and repo_hash in latest_updates:
+                repo["updates"] = latest_updates[repo_hash].isoformat()
+
 
         return {
             "repoCount": len(repos),

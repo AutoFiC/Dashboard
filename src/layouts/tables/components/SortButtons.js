@@ -49,10 +49,10 @@ function SortButtons({ handleSort, sortKey, sortOrder }) {
       </VuiButton>
       <VuiButton
         size="small"
-        onClick={() => handleSort("changes")}
+        onClick={() => handleSort("updates")}
         sx={buttonStyles("#4d2ef6", "#5c3ffc")}
       >
-        Sort by Changes{getArrow("changes")}
+        Sort by Updates{getArrow("updates")}
       </VuiButton>
     </VuiBox>
   );
