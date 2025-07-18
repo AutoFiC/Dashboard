@@ -8,79 +8,63 @@ import {
   Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Chart from "react-apexcharts";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 
 function AnalysisModal({ open, onClose, repo }) {
   if (!repo) return null;
 
-  const textColor = "#f1f1f1";
-  const cardBg = "#1c1f3b";
-  const sectionBg = "#242845";
-  const border = "1px solid rgba(255,255,255,0.05)";
-
-  const donutSeries = repo.byClass?.map((item) => item.count) || [];
-
-  const labelCount = donutSeries.length;
-  const whiteArray = new Array(labelCount).fill("#ffffff");
-
-  const donutOptions = {
-    chart: { type: "donut" },
-    labels: repo.byClass?.map((item) => item.type),
-    legend: {
-      position: "bottom",
-      labels: {
-        colors: whiteArray,
-        useSeriesColors: false,
-      },
-      fontSize: "14px",
-      fontWeight: 500,
-      itemMargin: {
-        horizontal: 10,
-        vertical: 5,
-      },
-      markers: {
-        width: 12,
-        height: 12,
-        radius: 12,
-      },
-    },
-    dataLabels: {
-      style: {
-        fontSize: "14px",
-        fontWeight: "bold",
-        colors: ["#ffffff"],
-      },
-    },
-    tooltip: { theme: "dark" },
-    stroke: { width: 2 },
-  };
+  const textColor = "#e3f2fd";
+  const cardBg = "linear-gradient(135deg, #20263a, #2e3a6a)";
+  const sectionBg = "linear-gradient(135deg, #283046, #3f497d)";
+  const border = "1px solid rgba(255, 255, 255, 0.08)";
+  const fontFamily = "'Poppins', 'Noto Sans KR', 'Roboto', sans-serif";
+  const highlightColor = "#bce0eeff";
+  const secondaryColor = "#4baaf8ff";
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <Box sx={{ backgroundColor: cardBg, color: `${textColor} !important` }}>
+      <Box
+        sx={{
+          background: cardBg,
+          color: textColor,
+          fontFamily,
+          backdropFilter: "blur(10px)",
+          borderRadius: "12px",
+        }}
+      >
         <DialogTitle
           sx={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "linear-gradient(135deg, #0f1123, #1a1d40)",
-            color: "#ffffff !important",
-            fontSize: "1.25rem !important",
-            fontWeight: "bold !important",
-            padding: "16px 24px !important",
-            fontFamily: "'Noto Sans KR', 'Roboto', sans-serif",
+            background: "rgba(30, 36, 74, 0.9)",
+            color: textColor,
+            padding: "18px 24px",
+            fontFamily,
+            borderBottom: border,
           }}
         >
-          <Box display="flex" alignItems="center" gap={1}>
-            <span role="img" aria-label="analyze">🧠</span> {repo.name} - Repository Analysis
+          <Box display="flex" alignItems="center">
+            <Typography
+              sx={{
+                fontSize: "1.6rem",
+                fontWeight: 900,
+                background: "linear-gradient(90deg, #4baaf8ff, #a8d7ea)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              {repo.name}
+            </Typography>
           </Box>
           <IconButton
             onClick={onClose}
             sx={{
               color: "#ffffff",
-              "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              },
             }}
           >
             <CloseIcon />
@@ -90,115 +74,97 @@ function AnalysisModal({ open, onClose, repo }) {
         <DialogContent
           dividers
           sx={{
-            backgroundColor: cardBg,
-            padding: "24px !important",
-            fontFamily: "'Noto Sans KR', 'Roboto', sans-serif",
-            color: `${textColor} !important`,
+            background: cardBg,
+            padding: "26px",
+            fontFamily,
+            color: textColor,
           }}
         >
           {/* Repository Info */}
           <VuiBox
             mb={4}
             sx={{
-              backgroundColor: sectionBg,
+              background: sectionBg,
               padding: 3,
-              borderRadius: "12px",
+              borderRadius: "16px",
               border,
-              fontFamily: "'Noto Sans KR', 'Roboto', sans-serif",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
             }}
           >
             <VuiTypography
               variant="button"
-              color="white"
               fontWeight="bold"
               mb={2}
-              sx={{ fontSize: "0.95rem !important" }}
+              sx={{
+                fontSize: "1rem",
+                color: secondaryColor,
+              }}
             >
               🧷 Repository Info
             </VuiTypography>
 
-            <Typography sx={{ color: textColor, fontSize: "0.95rem !important", fontFamily: "'Noto Sans KR', sans-serif" }}>
-              <strong>Owner:</strong> {repo.owner}
-            </Typography>
-            <Typography sx={{ color: textColor, fontSize: "0.95rem !important", fontFamily: "'Noto Sans KR', sans-serif" }}>
-              <strong>SAST Tool:</strong> {repo.sastTool}
-            </Typography>
-            <Typography sx={{ color: textColor, fontSize: "0.95rem !important", fontFamily: "'Noto Sans KR', sans-serif" }}>
-              <strong>Vulnerabilities:</strong> {repo.vulnerabilities}
-            </Typography>
-            <Typography sx={{ color: textColor, fontSize: "0.95rem !important", fontFamily: "'Noto Sans KR', sans-serif" }}>
-              <strong>Rerun:</strong> {repo.rerun ? "Yes" : "No"}
-            </Typography>
-            <Typography sx={{ color: textColor, fontSize: "0.95rem !important", fontFamily: "'Noto Sans KR', sans-serif" }}>
-              <strong>Last Updated:</strong>{" "}
-              {new Date(repo.updates).toLocaleString("ko-KR", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            </Typography>
-          </VuiBox>
-
-          {/* Vulnerability Classes */}
-          {donutSeries.length > 0 && (
-            <VuiBox
-              mb={4}
-              sx={{
-                backgroundColor: sectionBg,
-                padding: 3,
-                borderRadius: "12px",
-                border,
-              }}
-            >
-              <VuiTypography
-                variant="button"
-                color="white"
-                fontWeight="bold"
-                mb={2}
-                sx={{ fontSize: "0.95rem !important" }}
+            {[
+              ["Owner", repo.owner],
+              ["SAST Tool", repo.sastTool],
+              ["Vulnerabilities", repo.vulnerabilities],
+              ["Rerun", repo.rerun ? "Yes" : "No"],
+              [
+                "Last Updated",
+                new Date(repo.updates).toLocaleString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                }),
+              ],
+            ].map(([label, value], idx) => (
+              <Typography
+                key={idx}
+                sx={{
+                  color: highlightColor,
+                  fontSize: "0.95rem",
+                  mb: 0.5,
+                }}
               >
-                📊 Vulnerability Classes
-              </VuiTypography>
-              <Chart
-                options={donutOptions}
-                series={donutSeries}
-                type="donut"
-                height={260}
-              />
-            </VuiBox>
-          )}
+                <strong>{label}:</strong>{" "}
+                <span style={{ color: textColor }}>{value}</span>
+              </Typography>
+            ))}
+          </VuiBox>
 
           {/* AI Analysis */}
           {repo.analysis && (
             <VuiBox
               sx={{
-                backgroundColor: sectionBg,
+                background: sectionBg,
                 padding: 3,
-                borderRadius: "12px",
+                borderRadius: "16px",
                 border,
+                boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
               }}
             >
               <VuiTypography
                 variant="button"
-                color="white"
                 fontWeight="bold"
                 mb={2}
-                sx={{ fontSize: "0.95rem !important" }}
+                sx={{
+                  fontSize: "1rem",
+                  color: secondaryColor,
+                }}
               >
                 🧾 AI-generated Analysis
               </VuiTypography>
               <Box
                 sx={{
-                  backgroundColor: "#0b1437",
+                  backgroundColor: "#121c3a",
                   padding: 2,
                   borderRadius: 2,
                   fontFamily: "'Fira Code', monospace",
-                  fontSize: "0.95rem !important",
+                  fontSize: "0.95rem",
                   whiteSpace: "pre-wrap",
-                  color: `${textColor} !important`,
+                  color: "#e3f2fd",
                 }}
               >
                 {repo.analysis}

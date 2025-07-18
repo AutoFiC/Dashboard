@@ -51,7 +51,7 @@ function Tables() {
                 color: "#56C1FF",
                 cursor: "pointer",
                 fontWeight: 600,
-                fontSize: "0.9rem",
+                fontSize: "1.1rem",
               }}
               onClick={() => {
                 setSelectedRepoForModal(repo);
