@@ -44,78 +44,50 @@ function Tables() {
         ]);
 
         const rows = data.repos.map((repo) => ({
-        ...repo,
-        name: (
-          <span
-            style={{
-              color: "#5e72e4",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-            onClick={() => {
-              setSelectedRepoForModal(repo);
-              setIsModalOpen(true);
-            }}
-          >
-            {repo.name}
-          </span>
-        ),
-        vulnerabilities: repo.vulnerabilities,
-        updates: repo.updates
-          ? new Date(repo.updates).toLocaleString(undefined, {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false
-            }).replace(",", "")
-          : "",
-        sastTool: repo.sastTool || "N/A",
-        rerun: repo.rerun ? "Yes" : "No",
-        url: (
-          <a
-            href={repo.repo_url}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: "#5e72e4", wordBreak: "break-all" }}
-          >
-            {repo.repo_url}
-          </a>
-        ),
-      }));
+          ...repo,
+          name: (
+            <span
+              style={{
+                color: "#56C1FF",
+                cursor: "pointer",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+              }}
+              onClick={() => {
+                setSelectedRepoForModal(repo);
+                setIsModalOpen(true);
+              }}
+            >
+              {repo.name}
+            </span>
+          ),
+          vulnerabilities: repo.vulnerabilities,
+          updates: repo.updates
+            ? new Date(repo.updates).toLocaleString(undefined, {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }).replace(",", "")
+            : "",
+          sastTool: repo.sastTool || "N/A",
+          rerun: repo.rerun ? "Yes" : "No",
+          url: (
+            <a
+              href={repo.repo_url}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#5e72e4", wordBreak: "break-all" }}
+            >
+              {repo.repo_url}
+            </a>
+          ),
+        }));
 
-      setRepoRows(rows);
-      setOriginalData(rows);
-
-        setRepoRows(
-          data.repos.map((repo) => ({
-            name: repo.name,
-            vulnerabilities: repo.vulnerabilities,
-            updates: repo.updates
-              ? new Date(repo.updates).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false
-                }).replace(",", "")
-              : "",
-            sastTool: repo.sastTool || "N/A",
-            rerun: repo.rerun ? "Yes" : "No",
-            url: (
-              <a
-                href={repo.repo_url}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: "#5e72e4", wordBreak: "break-all" }}
-              >
-                {repo.repo_url}
-              </a>
-            ),
-          }))
-        );
+        setRepoRows(rows);
+        setOriginalData(rows);
       })
       .catch((err) => console.error("dashboard_data.json 로드 실패:", err));
   }, []);
@@ -133,10 +105,9 @@ function Tables() {
     const query = searchQuery.trim().toLowerCase();
     const filtered = originalData.filter(
       (row) =>
-        typeof row.name === "string" &&
-        (row.name.toLowerCase().includes(query) ||
-          row.owner.toLowerCase().includes(query) ||
-          row.repo_url.toLowerCase().includes(query))
+        typeof row.name === "object" &&
+        (row.repo_url?.toLowerCase().includes(query) ||
+          row.owner?.toLowerCase().includes(query))
     );
     setRepoRows(filtered);
     setCurrentPage(1);
@@ -152,9 +123,9 @@ function Tables() {
     if (!sortKey) return 0;
 
     if (sortKey === "updates") {
-    const dateA = new Date(a.updates || "1970-01-01");
-    const dateB = new Date(b.updates || "1970-01-01");
-    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      const dateA = new Date(a.updates || "1970-01-01");
+      const dateB = new Date(b.updates || "1970-01-01");
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     }
 
     const valA = Number(a[sortKey]);
@@ -183,7 +154,6 @@ function Tables() {
               overflow: "hidden !important",
             }}
           >
-            {/* 타이틀 */}
             <VuiBox
               display="flex"
               justifyContent="space-between"
@@ -197,7 +167,6 @@ function Tables() {
               </VuiTypography>
             </VuiBox>
 
-            {/* 검색창 */}
             <VuiBox px={3} py={1}>
               <SearchInput
                 value={searchQuery}
@@ -207,7 +176,6 @@ function Tables() {
               />
             </VuiBox>
 
-            {/* 정렬 및 필터 */}
             <VuiBox
               display="flex"
               gap={2}
@@ -233,7 +201,6 @@ function Tables() {
               />
             </VuiBox>
 
-            {/* 테이블 */}
             <VuiBox
               sx={{
                 backgroundColor: "transparent !important",
@@ -250,7 +217,6 @@ function Tables() {
               <Table columns={repoColumns} rows={paginatedRows} />
             </VuiBox>
 
-            {/* 페이지네이션 */}
             <VuiPagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -259,7 +225,9 @@ function Tables() {
           </Card>
         </VuiBox>
       </VuiBox>
+
       <Footer />
+
       <AnalysisModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
