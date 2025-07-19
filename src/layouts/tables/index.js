@@ -17,14 +17,13 @@ function Tables() {
   const [repoRows, setRepoRows] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5;
+  const rowsPerPage = 8;
 
   const [sortKey, setSortKey] = useState("updates");
   const [sortOrder, setSortOrder] = useState("desc");
 
   const [selectedTool, setSelectedTool] = useState("All");
   const [selectedRerun, setSelectedRerun] = useState("All");
-
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedRepoForModal, setSelectedRepoForModal] = useState(null);
