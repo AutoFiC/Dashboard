@@ -34,7 +34,8 @@ function Tables() {
       .then((res) => res.json())
       .then((data) => {
         setRepoColumns([
-          { name: "name", align: "left", width: "15%" },
+          { name: "repo_name", align: "left", width: "15%" },
+          { name: "owner", align: "left", width: "10%" },
           { name: "vulnerabilities", align: "center", width: "10%" },
           { name: "updates", align: "center", width: "15%" },
           { name: "sastTool", align: "center", width: "15%" },
@@ -44,7 +45,7 @@ function Tables() {
 
         const rows = data.repos.map((repo) => ({
           ...repo,
-          name: (
+          repo_name: (
             <span
               style={{
                 color: "#56C1FF",
@@ -60,7 +61,20 @@ function Tables() {
               {repo.name}
             </span>
           ),
-          vulnerabilities: repo.vulnerabilities,
+          owner: (
+            <span style={{ color: "#ffffffcc", fontWeight: 500 }}>
+              {repo.owner}
+            </span>
+          ),
+          vulnerabilities: (
+            <span style={{ fontWeight: 600 }}>
+              {repo.vulnerabilities <= 3 && "🟢 "}
+              {repo.vulnerabilities >= 4 && repo.vulnerabilities <= 7 && "🟡 "}
+              {repo.vulnerabilities >= 8 && "🔴 "}
+              {repo.vulnerabilities}
+            </span>
+          ),
+
           updates: repo.updates
             ? new Date(repo.updates).toLocaleString(undefined, {
                 year: "numeric",

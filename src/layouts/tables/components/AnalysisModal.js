@@ -10,6 +10,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
+import Chart from "react-apexcharts";
 
 function AnalysisModal({ open, onClose, repo }) {
   if (!repo) return null;
@@ -21,6 +22,63 @@ function AnalysisModal({ open, onClose, repo }) {
   const fontFamily = "'Poppins', 'Noto Sans KR', 'Roboto', sans-serif";
   const highlightColor = "#bce0eeff";
   const secondaryColor = "#4baaf8ff";
+
+  const renderByClassDonutChart = () => {
+    if (!repo.byClass || repo.byClass.length === 0) return null;
+
+    const labels = repo.byClass.map((item) => item.type);
+    const series = repo.byClass.map((item) => item.count);
+
+    const options = {
+      chart: {
+        type: "donut",
+        background: "transparent !important", // ✅ 우선순위 적용
+      },
+      labels,
+      legend: {
+        labels: {
+          colors: ["#e3f2fd"],
+          useSeriesColors: false,
+        },
+      },
+      dataLabels: {
+        enabled: true,
+        style: {
+          colors: ["#000"],
+        },
+      },
+      tooltip: {
+        theme: "dark",
+      },
+      theme: {
+        mode: "dark",
+      },
+      colors: ["#4baaf8", "#6ad4dd", "#a8d7ea", "#8c66ff", "#f9a826"],
+    };
+
+    return (
+      <VuiBox
+        mt={4}
+        sx={{
+          background: sectionBg,
+          padding: 3,
+          borderRadius: "16px",
+          border,
+          boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
+        }}
+      >
+        <VuiTypography
+          variant="button"
+          fontWeight="bold"
+          mb={2}
+          sx={{ fontSize: "1rem", color: secondaryColor }}
+        >
+          📉 Vulnerability Chart
+        </VuiTypography>
+        <Chart options={options} series={series} type="donut" height={300} />
+      </VuiBox>
+    );
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -73,14 +131,8 @@ function AnalysisModal({ open, onClose, repo }) {
 
         <DialogContent
           dividers
-          sx={{
-            background: cardBg,
-            padding: "26px",
-            fontFamily,
-            color: textColor,
-          }}
+          sx={{ background: cardBg, padding: "26px", fontFamily, color: textColor }}
         >
-          {/* Repository Info */}
           <VuiBox
             mb={4}
             sx={{
@@ -95,10 +147,7 @@ function AnalysisModal({ open, onClose, repo }) {
               variant="button"
               fontWeight="bold"
               mb={2}
-              sx={{
-                fontSize: "1rem",
-                color: secondaryColor,
-              }}
+              sx={{ fontSize: "1rem", color: secondaryColor }}
             >
               🧷 Repository Info
             </VuiTypography>
@@ -122,11 +171,7 @@ function AnalysisModal({ open, onClose, repo }) {
             ].map(([label, value], idx) => (
               <Typography
                 key={idx}
-                sx={{
-                  color: highlightColor,
-                  fontSize: "0.95rem",
-                  mb: 0.5,
-                }}
+                sx={{ color: highlightColor, fontSize: "0.95rem", mb: 0.5 }}
               >
                 <strong>{label}:</strong>{" "}
                 <span style={{ color: textColor }}>{value}</span>
@@ -134,9 +179,11 @@ function AnalysisModal({ open, onClose, repo }) {
             ))}
           </VuiBox>
 
-          {/* AI Analysis */}
+          {renderByClassDonutChart()}
+
           {repo.analysis && (
             <VuiBox
+              mt={4}
               sx={{
                 background: sectionBg,
                 padding: 3,
@@ -149,10 +196,7 @@ function AnalysisModal({ open, onClose, repo }) {
                 variant="button"
                 fontWeight="bold"
                 mb={2}
-                sx={{
-                  fontSize: "1rem",
-                  color: secondaryColor,
-                }}
+                sx={{ fontSize: "1rem", color: secondaryColor }}
               >
                 🧾 AI-generated Analysis
               </VuiTypography>
