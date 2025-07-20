@@ -17,7 +17,6 @@ function PRCountCards({ prCount, repoCount }) {
           <MiniStatisticsCard
             title={{ text: item.title }}
             count={item.count}
-            percentage={{ color: "success", text: "+0%" }}
             icon={{ color: "info", component: item.icon }}
           />
         </Grid>

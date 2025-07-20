@@ -48,6 +48,7 @@ function MiniStatisticsCard({ bgColor, title, count, percentage, icon, direction
                 opacity={1}
                 textTransform="capitalize"
                 fontWeight={title.fontWeight}
+                sx={{fontSize:"0.8rem"}}
               >
                 {title.text}
               </VuiTypography>

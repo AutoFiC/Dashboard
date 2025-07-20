@@ -19,7 +19,7 @@ function AnalysisModal({ open, onClose, repo }) {
   const cardBg = "linear-gradient(135deg, #20263a, #2e3a6a)";
   const sectionBg = "linear-gradient(135deg, #283046, #3f497d)";
   const border = "1px solid rgba(255, 255, 255, 0.08)";
-  const fontFamily = "'Poppins', 'Noto Sans KR', 'Roboto', sans-serif";
+  const fontFamily = "'Poppins', 'Noto Sans KR', 'Fira Code', sans-serif";
   const highlightColor = "#bce0eeff";
   const secondaryColor = "#4baaf8ff";
 
@@ -32,23 +32,32 @@ function AnalysisModal({ open, onClose, repo }) {
     const options = {
       chart: {
         type: "donut",
-        background: "transparent !important", // ✅ 우선순위 적용
+        background: "transparent !important",
+        fontFamily,
       },
       labels,
       legend: {
         labels: {
           colors: ["#e3f2fd"],
           useSeriesColors: false,
+          fontFamily,
         },
       },
       dataLabels: {
         enabled: true,
         style: {
           colors: ["#000"],
+          fontSize: "14px",
+          fontWeight: 500,
+          fontFamily,
         },
       },
       tooltip: {
         theme: "dark",
+        style: {
+          fontSize: "13px",
+          fontFamily,
+        },
       },
       theme: {
         mode: "dark",
@@ -152,8 +161,7 @@ function AnalysisModal({ open, onClose, repo }) {
               🧷 Repository Info
             </VuiTypography>
 
-            {[
-              ["Owner", repo.owner],
+            {[["Owner", repo.owner],
               ["SAST Tool", repo.sastTool],
               ["Vulnerabilities", repo.vulnerabilities],
               ["Rerun", repo.rerun ? "Yes" : "No"],
@@ -205,7 +213,7 @@ function AnalysisModal({ open, onClose, repo }) {
                   backgroundColor: "#121c3a",
                   padding: 2,
                   borderRadius: 2,
-                  fontFamily: "'Fira Code', monospace",
+                  fontFamily: "'Poppins', 'Noto Sans KR', 'Roboto', sans-serif",
                   fontSize: "0.95rem",
                   whiteSpace: "pre-wrap",
                   color: "#e3f2fd",

@@ -10,8 +10,9 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 import StatisticsCards from "layouts/dashboard/components/StatisticsCards";
-import SatisfactionRate from "layouts/dashboard/components/MergeSuccessRate";
 import VulnerabilityOverview from "layouts/dashboard/components/VulnerabilityOverview";
+import MergeSuccessCountCard from "layouts/dashboard/components/MergeSuccessCountCard";
+import ApprovedPRsModal from "layouts/dashboard/components/ApprovedPRsModal";
 
 import LineChart from "examples/Charts/LineCharts/LineChart";
 import BarChart from "examples/Charts/BarCharts/BarChart";
@@ -26,9 +27,10 @@ function Dashboard() {
   const [weeklyChartData, setWeeklyChartData] = useState([]);
   const [dailyChartData, setDailyChartData] = useState([]);
   const [prCount, setPrCount] = useState(null);
-  const [mergeRate, setMergeRate] = useState(0);
   const [repoCount, setRepoCount] = useState(null);
   const [vulnStats, setVulnStats] = useState(null);
+  const [approvedPRs, setApprovedPRs] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false); // 🔹 PR 모달 상태
 
   const weeklyChartOptions = {
     chart: { type: "area", toolbar: { show: false } },
@@ -73,9 +75,9 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setPrCount(data.prCount);
-        setMergeRate(data.mergeApprovalRate);
         setRepoCount(data.repoCount);
         setVulnStats(data.vulnerabilityStats);
+        setApprovedPRs(data.approved_prs || []);
 
         setWeeklyChartData([
           {
@@ -91,7 +93,9 @@ function Dashboard() {
           },
         ]);
       })
-      .catch((err) => console.error("Failed to load dashboard_data.json:", err));
+      .catch((err) =>
+        console.error("Failed to load dashboard_data.json:", err)
+      );
   }, []);
 
   if (!prCount || repoCount === null || vulnStats === null) return null;
@@ -103,28 +107,31 @@ function Dashboard() {
         <VuiBox mb={3}>
           <StatisticsCards prCount={prCount} repoCount={repoCount} />
 
+          {/* 🟪 Merge & Vulnerability 비율 조정 */}
           <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <SatisfactionRate rate={mergeRate} />
+            <Grid item xs={12} md={5} lg={4}>
+              <Card sx={{ height: "100%", minHeight: "200px" }}>
+                <MergeSuccessCountCard
+                  count={approvedPRs.length}
+                  onOpen={() => setModalOpen(true)} // 🔹 버튼 클릭 시 모달 열기
+                />
+              </Card>
             </Grid>
-            <Grid item xs={12} sm={6} md={9}>
-              <VulnerabilityOverview stats={vulnStats} />
+            <Grid item xs={12} md={7} lg={8}>
+              <Card sx={{ height: "100%", minHeight: "260px" }}>
+                <VulnerabilityOverview stats={vulnStats} />
+              </Card>
             </Grid>
           </Grid>
         </VuiBox>
 
+        {/* 🟦 Weekly & Daily PR Overview */}
         <VuiBox mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
+            <Grid item xs={12} md={5}>
               <Card sx={{ padding: "24px", height: "100%", minHeight: "300px" }}>
                 <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                   Weekly PR Overview
-                </VuiTypography>
-                <VuiTypography variant="button" color="success" fontWeight="bold" mb="20px">
-                  +0%{" "}
-                  <VuiTypography variant="button" color="text" fontWeight="regular">
-                    compared to last week
-                  </VuiTypography>
                 </VuiTypography>
                 <VuiBox sx={{ height: "220px" }}>
                   <LineChart
@@ -135,16 +142,10 @@ function Dashboard() {
               </Card>
             </Grid>
 
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={7}>
               <Card sx={{ padding: "24px", height: "100%", minHeight: "300px" }}>
                 <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                   Daily PR Overview
-                </VuiTypography>
-                <VuiTypography variant="button" color="success" fontWeight="bold" mb="20px">
-                  +0%{" "}
-                  <VuiTypography variant="button" color="text" fontWeight="regular">
-                    compared to yesterday
-                  </VuiTypography>
                 </VuiTypography>
                 <VuiBox
                   sx={{
@@ -168,6 +169,14 @@ function Dashboard() {
           </Grid>
         </VuiBox>
       </VuiBox>
+
+      {/* 🔵 승인된 PR 모달 */}
+      <ApprovedPRsModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        approvedPRs={approvedPRs}
+      />
+
       <Footer />
     </DashboardLayout>
   );
