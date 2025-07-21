@@ -12,12 +12,15 @@ import FilterDropdown from "./components/FilterDropdown";
 import SearchInput from "examples/SearchInput";
 import AnalysisModal from "./components/AnalysisModal";
 
+const SAST_TOOLS = ["All", "Semgrep", "CodeQL", "Snyk Code"];
+const RERUN_OPTIONS = ["All", "Yes", "No"];
+const ROWS_PER_PAGE = 10;
+
 function Tables() {
   const [repoColumns, setRepoColumns] = useState([]);
   const [repoRows, setRepoRows] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
 
   const [sortKey, setSortKey] = useState("updates");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -28,7 +31,6 @@ function Tables() {
 
   const [selectedRepoForModal, setSelectedRepoForModal] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/dashboard_data.json`)
       .then((res) => res.json())
@@ -45,6 +47,9 @@ function Tables() {
 
         const rows = data.repos.map((repo) => ({
           ...repo,
+          vulnerabilities_raw: repo.vulnerabilities,
+          sastTool_raw: repo.sastTool || "N/A",
+          rerun_raw: repo.rerun ? "Yes" : "No",
           repo_name: (
             <span
               style={{
@@ -62,9 +67,7 @@ function Tables() {
             </span>
           ),
           owner: (
-            <span style={{ color: "#ffffffcc", fontWeight: 500 }}>
-              {repo.owner}
-            </span>
+            <span style={{ color: "#ffffffcc", fontWeight: 500 }}>{repo.owner}</span>
           ),
           vulnerabilities: (
             <span style={{ fontWeight: 600 }}>
@@ -74,7 +77,6 @@ function Tables() {
               {repo.vulnerabilities}
             </span>
           ),
-
           updates: repo.updates
             ? new Date(repo.updates).toLocaleString(undefined, {
                 year: "numeric",
@@ -92,7 +94,7 @@ function Tables() {
               href={repo.repo_url}
               target="_blank"
               rel="noreferrer"
-              style={{ color: "#5e72e4", wordBreak: "break-all" }}
+              style={{ color: "#75aad3ff", wordBreak: "break-all" }}
             >
               {repo.repo_url}
             </a>
@@ -106,12 +108,8 @@ function Tables() {
   }, []);
 
   const handleSort = (key) => {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === "desc" ? "asc" : "desc");
-    } else {
-      setSortKey(key);
-      setSortOrder("desc");
-    }
+    setSortOrder((prev) => (sortKey === key && prev === "desc" ? "asc" : "desc"));
+    setSortKey(key);
   };
 
   const handleSearch = () => {
@@ -127,32 +125,30 @@ function Tables() {
   };
 
   const filteredRows = repoRows.filter((row) => {
-    const matchTool = selectedTool === "All" || row.sastTool === selectedTool;
-    const matchRerun = selectedRerun === "All" || row.rerun === selectedRerun;
+    const matchTool =
+      selectedTool === "All" || row.sastTool_raw?.toLowerCase() === selectedTool.toLowerCase();
+    const matchRerun =
+      selectedRerun === "All" || row.rerun_raw?.toLowerCase() === selectedRerun.toLowerCase();
     return matchTool && matchRerun;
   });
 
   const sortedRows = [...filteredRows].sort((a, b) => {
     if (!sortKey) return 0;
-
     if (sortKey === "updates") {
-      const dateA = new Date(a.updates || "1970-01-01");
-      const dateB = new Date(b.updates || "1970-01-01");
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      return sortOrder === "asc"
+        ? new Date(a.updates) - new Date(b.updates)
+        : new Date(b.updates) - new Date(a.updates);
     }
 
-    const valA = Number(a[sortKey]);
-    const valB = Number(b[sortKey]);
+    const valA = Number(a.vulnerabilities_raw);
+    const valB = Number(b.vulnerabilities_raw);
     return sortOrder === "asc" ? valA - valB : valB - valA;
   });
 
   const paginatedRows = sortedRows.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    (currentPage - 1) * ROWS_PER_PAGE,
+    currentPage * ROWS_PER_PAGE
   );
-
-  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -167,19 +163,14 @@ function Tables() {
               overflow: "hidden !important",
             }}
           >
-            <VuiBox
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              px={3}
-              py={2}
-              sx={{ backgroundColor: "transparent !important" }}
-            >
+            {/* 헤더 */}
+            <VuiBox display="flex" justifyContent="space-between" alignItems="center" px={3} py={2}>
               <VuiTypography variant="lg" color="white">
                 Repositories Table
               </VuiTypography>
             </VuiBox>
 
+            {/* 검색 */}
             <VuiBox px={3} py={1}>
               <SearchInput
                 value={searchQuery}
@@ -189,19 +180,13 @@ function Tables() {
               />
             </VuiBox>
 
-            <VuiBox
-              display="flex"
-              gap={2}
-              flexWrap="wrap"
-              px={3}
-              py={1}
-              sx={{ backgroundColor: "transparent !important" }}
-            >
+            {/* 정렬 & 필터 */}
+            <VuiBox display="flex" gap={2} flexWrap="wrap" px={3} py={1}>
               <SortButtons handleSort={handleSort} sortKey={sortKey} sortOrder={sortOrder} />
               <FilterDropdown
                 label="SAST Tool"
                 value={selectedTool}
-                options={["All", "Semgrep", "CodeQL", "Snyk Code", "ESLint"]}
+                options={["All", "Semgrep", "CodeQL", "Snyk Code"]}
                 onChange={(e) => setSelectedTool(e.target.value)}
                 bgColor="rgb(87,68,236)"
               />
@@ -214,14 +199,10 @@ function Tables() {
               />
             </VuiBox>
 
+            {/* 테이블 */}
             <VuiBox
               sx={{
-                backgroundColor: "transparent !important",
-                "& th": {
-                  borderBottom: ({ borders: { borderWidth }, palette: { grey } }) =>
-                    `${borderWidth[1]} solid ${grey[700]}`,
-                },
-                "& .MuiTableRow-root:not(:last-child) td": {
+                "& th, & .MuiTableRow-root:not(:last-child) td": {
                   borderBottom: ({ borders: { borderWidth }, palette: { grey } }) =>
                     `${borderWidth[1]} solid ${grey[700]}`,
                 },
@@ -230,9 +211,10 @@ function Tables() {
               <Table columns={repoColumns} rows={paginatedRows} />
             </VuiBox>
 
+            {/* 페이지네이션 */}
             <VuiPagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={Math.ceil(filteredRows.length / ROWS_PER_PAGE)}
               onPageChange={setCurrentPage}
             />
           </Card>
@@ -241,6 +223,7 @@ function Tables() {
 
       <Footer />
 
+      {/* 모달 */}
       <AnalysisModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
