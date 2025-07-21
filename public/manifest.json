@@ -1,9 +1,9 @@
 {
-  "short_name": "Vision UI Dashboard",
-  "name": "Vision UI Dashboard React",
+  "short_name": "AutoFiC",
+  "name": "AutoFiC Dashboard",
   "icons": [
     {
-      "src": "favicon.png",
+      "src": "autofic-logo.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/png"
     }

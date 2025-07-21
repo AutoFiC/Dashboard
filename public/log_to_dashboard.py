@@ -55,7 +55,7 @@ class DashboardBuilder:
                 class_counter[cls["type"]] += cls["count"]
 
         byClass = [{"type": k, "count": v} for k, v in class_counter.items()]
-        top3 = [t for t, _ in class_counter.most_common(3)]
+        top3 = [{"type": t, "count": c} for t, c in class_counter.most_common(3)]
 
         for pr in prs:
             repo_hash = pr.get("repo_hash")
@@ -71,8 +71,16 @@ class DashboardBuilder:
             if repo_hash and repo_hash in latest_updates:
                 repo["updates"] = latest_updates[repo_hash].isoformat()
 
+        approved_prs = []
+        for pr in prs:
+            if pr.get("approved"):
+                pr = pr.copy()
+                pr["repo_name"] = pr["repo_url"].rstrip("/").split("/")[-1]
+                approved_prs.append(pr)
 
         return {
+            "approved_pr_count": len(approved_prs),
+            "approved_prs": approved_prs,
             "repoCount": len(repos),
             "vulnerabilityStats": {
                 "totalCount": total_vuln_count,
