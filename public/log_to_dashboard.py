@@ -96,8 +96,7 @@ class DashboardBuilder:
             "charts": {
                 "dailyPRs": dailyPRs,
                 "weeklyPRs": weeklyPRs
-            },
-            "mergeApprovalRate" : 80 # 수정 필요
+            }
         }
 
     def save_dashboard_data(self, dashboard_data):

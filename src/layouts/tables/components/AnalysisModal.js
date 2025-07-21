@@ -156,7 +156,7 @@ function AnalysisModal({ open, onClose, repo }) {
                   color: secondaryColor,
                 }}
               >
-                🧾 AI-generated Analysis
+                🧾 Analysis
               </VuiTypography>
               <Box
                 sx={{
