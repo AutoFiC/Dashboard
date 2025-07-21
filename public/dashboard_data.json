@@ -1,0 +1,131 @@
+{
+ "approved_pr_count": 12,
+ "approved_prs": [
+    {
+      "date": "2025-07-17T10:33:45.959732",
+      "owner": "appsecco",
+      "user_name": "seoonju",
+      "repo_url": "https://github.com/appsecco/dvna",
+      "repo_hash": "d1200639b4ae11b71e30ca05307638ce3d83d0aae1fd44804e395bc61a4a42c0",
+      "pr_number": 5,
+      "approved": true,
+      "repo_name": "dvna"
+    }
+  ],
+  "repoCount": 7,
+  "vulnerabilityStats": {
+    "totalCount": 18,
+    "byClass": [
+      {
+        "type": "server-side-unvalidated-url-redirection",
+        "count": 1
+      },
+      {
+        "type": "functionality-from-untrusted-source",
+        "count": 1
+      },
+      {
+        "type": "clear-text-cookie",
+        "count": 1
+      },
+      {
+        "type": "sql-injection",
+        "count": 1
+      },
+      {
+        "type": "missing-rate-limiting",
+        "count": 12
+      },
+      {
+        "type": "command-line-injection",
+        "count": 1
+      },
+      {
+        "type": "xxe",
+        "count": 1
+      },
+      {
+        "type": "xml-bomb",
+        "count": 1
+      },
+      {
+        "type": "code-injection",
+        "count": 1
+      },
+      {
+        "type": "xss",
+        "count": 1
+      }
+    ],
+    "top3": [
+    { "type": "SQL Injection", "count": 7 },
+    { "type": "Open Redirect", "count": 4 },
+    { "type": "Insecure Deserialization", "count": 6 }
+		]
+  },
+  "prCount": {
+    "total": 4,
+    "daily": 1,
+    "weekly": 3
+  },
+  "repos": [
+    {
+      "name": "dvna",
+      "owner": "appsecco",
+      "repo_url": "https://github.com/inyeongjang/dvna",
+      "vulnerabilities": 11,
+      "updates": "2025-07-17T10:33:45.959732",
+      "sastTool": "Synk Code",
+      "rerun": true,
+      "byClass": [
+        { "type": "server-side-unvalidated-url-redirection", "count": 1 },
+        { "type": "functionality-from-untrusted-source", "count": 1 },
+        { "type": "clear-text-cookie", "count": 1 }
+      ],
+      "analysis": "LLM이 생성한 취약점 설명, 수정 코드 등 텍스트 블록 1"
+    },
+    {
+      "name": "serve",
+      "owner": "vercel",
+      "repo_url": "https://github.com/inyeongjang/serve",
+      "vulnerabilities": 6,
+      "updates": "2025-07-16T10:33:45.959732",
+      "sastTool": "CodeQL",
+      "rerun": true,
+      "byClass": [
+        { "type": "SQL Injection", "count": 7 },
+        { "type": "Open Redirect", "count": 4 }
+      ],
+      "analysis": "LLM이 생성한 취약점 설명, 수정 코드 등 텍스트 블록 2"
+    },
+    {
+      "name": "dvna",
+      "owner": "appsecco",
+      "repo_url": "https://github.com/inyeongjang/dvna",
+      "vulnerabilities": 14,
+      "updates": "2025-07-17T10:33:45.959732",
+      "sastTool": "Semgrep",
+      "rerun": true,
+      "byClass": [
+        { "type": "xml-bomb", "count": 1 },
+        { "type": "code-injection", "count": 1 },
+        { "type": "xss", "count": 1 }
+      ],
+      "analysis": "LLM이 생성한 취약점 설명, 수정 코드 등 텍스트 블록 3"
+    }
+  ],
+  "charts": {
+    "dailyPRs": [
+      { "x": "2025-07-02", "y": 1 },
+      { "x": "2025-07-04", "y": 4 },
+      { "x": "2025-07-11", "y": 3 },
+      { "x": "2025-07-14", "y": 7 },
+      { "x": "2025-07-23", "y": 5 }
+    ],
+    "weeklyPRs": [
+      { "x": "Jul 1st week", "y": 3 },
+      { "x": "Jul 2nd week", "y": 1 },
+      { "x": "Jul 3nd week", "y": 4 }
+    ]
+  }
+ } 

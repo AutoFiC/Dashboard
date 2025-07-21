@@ -11,6 +11,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import Chart from "react-apexcharts";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function AnalysisModal({ open, onClose, repo }) {
   if (!repo) return null;
@@ -206,7 +208,7 @@ function AnalysisModal({ open, onClose, repo }) {
                 mb={2}
                 sx={{ fontSize: "1rem", color: secondaryColor }}
               >
-                🧾 AI-generated Analysis
+                🧾 Analysis
               </VuiTypography>
               <Box
                 sx={{
@@ -215,11 +217,47 @@ function AnalysisModal({ open, onClose, repo }) {
                   borderRadius: 2,
                   fontFamily: "'Poppins', 'Noto Sans KR', 'Roboto', sans-serif",
                   fontSize: "0.95rem",
-                  whiteSpace: "pre-wrap",
                   color: "#e3f2fd",
+                  lineHeight: 1.6,
+                  overflowX: "auto"
                 }}
               >
-                {repo.analysis}
+                <ReactMarkdown
+                  children={repo.analysis}
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ node, ...props }) => (
+                      <h1 style={{ fontSize: "1.4rem", fontWeight: "bold", marginTop: "1em" }} {...props} />
+                    ),
+                    h2: ({ node, ...props }) => (
+                      <h2 style={{ fontSize: "1.2rem", fontWeight: "bold", marginTop: "1em" }} {...props} />
+                    ),
+                    h3: ({ node, ...props }) => (
+                      <h3 style={{ fontSize: "1.1rem", fontWeight: "bold", marginTop: "0.8em" }} {...props} />
+                    ),
+                    p: ({ node, ...props }) => (
+                      <p style={{ margin: "0.5em 0" }} {...props} />
+                    ),
+                    code: ({ node, ...props }) => (
+                      <code style={{ backgroundColor: "#1c2b44", padding: "2px 4px", borderRadius: "4px" }} {...props} />
+                    ),
+                    table: ({ node, ...props }) => (
+                      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "1em", marginBottom: "1em" }} {...props} />
+                    ),
+                    th: ({ node, ...props }) => (
+                      <th style={{ border: "1px solid #4b6584", padding: "6px", backgroundColor: "#2f3b58", color: "#fff" }} {...props} />
+                    ),
+                    td: ({ node, ...props }) => (
+                      <td style={{ border: "1px solid #4b6584", padding: "6px" }} {...props} />
+                    ),
+                    a: ({ node, ...props }) => (
+                      <a style={{ color: "#4baaf8", textDecoration: "underline" }} {...props} />
+                    ),
+                    li: ({ node, ...props }) => (
+                      <li style={{ marginBottom: "0.3em" }} {...props} />
+                    ),
+                  }}
+                />
               </Box>
             </VuiBox>
           )}
