@@ -12,19 +12,19 @@ function SortButtons({ handleSort, sortKey, sortOrder }) {
   const buttonStyles = (bgColor, hoverColor) => ({
     backgroundColor: `${bgColor} !important`,
     color: "#fff !important",
-    fontSize: "0.9rem !important",
-    fontWeight: "normal !important",
-    minWidth: "130px !important",
-    height: "30px !important",
-    borderRadius: "10px !important",
-    padding: "0 12px !important",
-    textTransform: "none !important",
+    fontSize: "0.9rem",
+    fontWeight: "normal",
+    minWidth: "130px",
+    height: "30px",
+    borderRadius: "10px",
+    padding: "0 12px",
+    textTransform: "none",
+    boxShadow: "none !important",
     "&:hover": {
       backgroundColor: `${hoverColor} !important`,
     },
     "&:active": {
       backgroundColor: `${bgColor} !important`,
-      boxShadow: "none !important",
     },
     "&:focus": {
       backgroundColor: `${bgColor} !important`,

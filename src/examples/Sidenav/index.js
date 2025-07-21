@@ -1,30 +1,22 @@
-/*! Vision UI Free React */
-
 import { useEffect } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
-// MUI components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
 
-// Vision UI components
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import VuiButton from "components/VuiButton";
 
-// Sidenav components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavCard from "examples/Sidenav/SidenavCard";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 
-// Context
 import { useVisionUIController, setMiniSidenav, setTransparentSidenav } from "context";
-
-// Logo
-import logoImage from "assets/images/autofic-logo.png";
+import logoImage from "assets/images/AutoFiC-logo.png";
 
 function Sidenav({ color, brandName, routes, ...rest }) {
   const [controller, dispatch] = useVisionUIController();
@@ -35,9 +27,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   useEffect(() => {
-    function handleResize() {
-      setMiniSidenav(dispatch, window.innerWidth < 1200);
-    }
+    const handleResize = () => setMiniSidenav(dispatch, window.innerWidth < 1200);
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
@@ -51,31 +41,23 @@ function Sidenav({ color, brandName, routes, ...rest }) {
 
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, route, href }) => {
     if (type === "collapse") {
+      const CollapseComponent = (
+        <SidenavCollapse
+          color={color}
+          name={name}
+          icon={icon}
+          active={key === collapseName}
+          noCollapse={noCollapse}
+        />
+      );
+
       return href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
-          <SidenavCollapse
-            color={color}
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
-          />
+        <Link href={href} key={key} target="_blank" rel="noreferrer" sx={{ textDecoration: "none" }}>
+          {CollapseComponent}
         </Link>
       ) : (
         <NavLink to={route} key={key}>
-          <SidenavCollapse
-            color={color}
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
-          />
+          {CollapseComponent}
         </NavLink>
       );
     }
@@ -98,10 +80,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
       );
     }
 
-    if (type === "divider") {
-      return <Divider light key={key} />;
-    }
-
+    if (type === "divider") return <Divider light key={key} />;
     return null;
   });
 
@@ -121,6 +100,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </VuiTypography>
         </VuiBox>
+
         <VuiBox component={NavLink} to="/" display="flex" alignItems="center">
           <VuiBox
             sx={{
@@ -132,14 +112,10 @@ function Sidenav({ color, brandName, routes, ...rest }) {
             <VuiBox
               display="flex"
               sx={{
-                mr: miniSidenav || (miniSidenav && transparentSidenav) ? 0 : 1,
+                mr: miniSidenav && transparentSidenav ? 0 : 1,
               }}
             >
-              <img
-                src={logoImage}
-                alt="AutoFic Logo"
-                style={{ width: "60px", height: "60px" }}
-              />
+              <img src={logoImage} alt="AutoFiC Logo" style={{ width: "60px", height: "60px" }} />
             </VuiBox>
             <VuiTypography
               variant="h4"
@@ -148,8 +124,8 @@ function Sidenav({ color, brandName, routes, ...rest }) {
               fontSize={26}
               letterSpacing={0.5}
               sx={{
-                opacity: miniSidenav || (miniSidenav && transparentSidenav) ? 0 : 1,
-                maxWidth: miniSidenav || (miniSidenav && transparentSidenav) ? 0 : "100%",
+                opacity: miniSidenav && transparentSidenav ? 0 : 1,
+                maxWidth: miniSidenav && transparentSidenav ? 0 : "100%",
                 margin: "0 auto",
               }}
             >
@@ -176,26 +152,27 @@ function Sidenav({ color, brandName, routes, ...rest }) {
         <VuiBox mt={2}>
           <VuiButton
             component="a"
-            href="https://creative-tim.com/product/vision-ui-dashboard-pro-react"
+            href="https://AutoFiC.github.io/"
             target="_blank"
             rel="noreferrer"
             variant="gradient"
             color={color}
             fullWidth
             sx={{
-            background: "linear-gradient(90deg, #5f4dee, #7f59e0, #996cfb) !important",
-            color: "#fff !important",
-            fontWeight: "bold",
-            fontSize: "14px",
-            padding: "12px",
-            textTransform: "none",
-            boxShadow: "0px 4px 16px rgba(0, 0, 0, 0.3)",
-            "&:hover": {
-              background: "linear-gradient(90deg,rgb(87, 68, 236),rgb(108, 70, 206), #996cfb)",
-            },
-          }}
+              background: "linear-gradient(90deg, #5f4dee, #7f59e0, #996cfb) !important",
+              color: "#fff !important",
+              fontWeight: "bold",
+              fontSize: "14px",
+              padding: "12px",
+              textTransform: "none",
+              boxShadow: "0px 4px 16px rgba(0, 0, 0, 0.3)",
+              "&:hover": {
+                background:
+                  "linear-gradient(90deg, rgb(87, 68, 236), rgb(108, 70, 206), #996cfb)",
+              },
+            }}
           >
-            Learn More About AutoFic
+            Learn More About AutoFiC
           </VuiButton>
         </VuiBox>
       </VuiBox>
@@ -208,9 +185,7 @@ Sidenav.defaultProps = {
 };
 
 Sidenav.propTypes = {
-  color: PropTypes.oneOf([
-    "primary", "secondary", "info", "success", "warning", "error", "dark",
-  ]),
+  color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
