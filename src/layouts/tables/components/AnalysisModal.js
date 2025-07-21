@@ -11,6 +11,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function AnalysisModal({ open, onClose, repo }) {
   if (!repo) return null;
@@ -170,6 +171,7 @@ function AnalysisModal({ open, onClose, repo }) {
               >
                 <ReactMarkdown
                   children={repo.analysis}
+                  remarkPlugins={[remarkGfm]}
                   components={{
                     h1: ({node, ...props}) => <h1 style={{ fontSize: "1.4rem", fontWeight: "bold", marginTop: "1em" }} {...props} />,
                     h2: ({node, ...props}) => <h2 style={{ fontSize: "1.2rem", fontWeight: "bold", marginTop: "1em" }} {...props} />,
