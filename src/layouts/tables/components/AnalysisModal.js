@@ -117,7 +117,7 @@ function AnalysisModal({ open, onClose, repo }) {
   ];
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <Box
         sx={{
           background: cardBg,
