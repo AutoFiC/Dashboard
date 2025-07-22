@@ -58,6 +58,7 @@ function AnalysisModal({ open, onClose, repo }) {
         style: {
           fontSize: "13px",
           fontFamily,
+          color: "#000",
         },
       },
       theme: { mode: "dark" },
@@ -65,26 +66,35 @@ function AnalysisModal({ open, onClose, repo }) {
     };
 
     return (
-      <VuiBox
-        mt={4}
-        sx={{
-          background: sectionBg,
-          padding: 3,
-          borderRadius: "16px",
-          border,
-          boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
-        }}
-      >
-        <VuiTypography
-          variant="button"
-          fontWeight="bold"
-          mb={2}
-          sx={{ fontSize: "1rem", color: secondaryColor }}
+      <>
+        <style>
+          {`
+            .apexcharts-tooltip {
+              color: black !important;
+            }
+          `}
+        </style>
+        <VuiBox
+          mt={4}
+          sx={{
+            background: sectionBg,
+            padding: 3,
+            borderRadius: "16px",
+            border,
+            boxShadow: "0 6px 24px rgba(0,0,0,0.4)",
+          }}
         >
-          📉 Vulnerability Chart
-        </VuiTypography>
-        <Chart options={options} series={series} type="donut" height={300} />
-      </VuiBox>
+          <VuiTypography
+            variant="button"
+            fontWeight="bold"
+            mb={2}
+            sx={{ fontSize: "1rem", color: secondaryColor }}
+          >
+            📉 Vulnerability Chart
+          </VuiTypography>
+          <Chart options={options} series={series} type="donut" height={300} />
+        </VuiBox>
+      </>
     );
   };
 
