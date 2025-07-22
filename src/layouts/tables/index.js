@@ -11,6 +11,7 @@ import SortButtons from "./components/SortButtons";
 import FilterDropdown from "./components/FilterDropdown";
 import SearchInput from "examples/SearchInput";
 import AnalysisModal from "./components/AnalysisModal";
+import { useLocation } from "react-router-dom";
 
 const SAST_TOOLS = ["All", "Semgrep", "CodeQL", "Snyk Code"];
 const RERUN_OPTIONS = ["All", "Yes", "No"];
@@ -112,17 +113,33 @@ function Tables() {
     setSortKey(key);
   };
 
+  const extractText = (node) => {
+    if (typeof node === "string") return node.toLowerCase();
+    if (Array.isArray(node)) return node.join(" ").toLowerCase();
+    return "";
+  };
+
   const handleSearch = () => {
     const query = searchQuery.trim().toLowerCase();
-    const filtered = originalData.filter(
-      (row) =>
-        typeof row.name === "object" &&
-        (row.repo_url?.toLowerCase().includes(query) ||
-          row.owner?.toLowerCase().includes(query))
-    );
+
+    const filtered = originalData.filter((row) => {
+      const nameText = extractText(row.repo_name.props?.children);
+      const ownerText = extractText(row.owner.props?.children);
+      const urlText = extractText(row.url.props?.children);
+      return nameText.includes(query) || ownerText.includes(query) || urlText.includes(query);
+    });
+
     setRepoRows(filtered);
     setCurrentPage(1);
   };
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === "#/table") {
+      setRepoRows(originalData);
+      setSearchQuery("");
+    }
+  }, [location]);
 
   const filteredRows = repoRows.filter((row) => {
     const matchTool =
@@ -208,7 +225,15 @@ function Tables() {
                 },
               }}
             >
-              <Table columns={repoColumns} rows={paginatedRows} />
+              {paginatedRows.length === 0 ? (
+                <VuiBox px={3} py={2}>
+                  <VuiTypography color="white" textAlign="center">
+                    🔍 검색 결과가 없습니다.
+                  </VuiTypography>
+                </VuiBox>
+              ) : (
+                <Table columns={repoColumns} rows={paginatedRows} />
+              )}
             </VuiBox>
 
             {/* 페이지네이션 */}
