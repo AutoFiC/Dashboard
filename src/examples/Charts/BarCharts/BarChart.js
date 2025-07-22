@@ -6,6 +6,9 @@ function BarChart({ barChartData, barChartOptions }) {
   const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
+    const dataLength = barChartData?.[0]?.data?.length || 0;
+    const columnWidth = dataLength >= 5 ? "40%" : "40px";
+
     const enhancedOptions = {
       ...barChartOptions,
       colors: ["#1d4d94ff"],
@@ -13,7 +16,7 @@ function BarChart({ barChartData, barChartOptions }) {
         ...barChartOptions.plotOptions,
         bar: {
           ...barChartOptions.plotOptions?.bar,
-          columnWidth: "40%",
+          columnWidth,
           distributed: true,
           backgroundBarColors: ["#001f3f"],
         },
