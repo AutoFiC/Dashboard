@@ -6,17 +6,34 @@ function BarChart({ barChartData, barChartOptions }) {
   const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
-    // 바 차트 옵션에 진한 색상과 고정된 바 너비 설정 병합
+    const dataLength = barChartData?.[0]?.data?.length || 0;
+    const columnWidth = dataLength >= 5 ? "40%" : "40px";
+
     const enhancedOptions = {
       ...barChartOptions,
-      colors: ["#1d4d94ff"], // 진한 파랑색 지정
+      colors: ["#1d4d94ff"],
       plotOptions: {
         ...barChartOptions.plotOptions,
         bar: {
           ...barChartOptions.plotOptions?.bar,
-          columnWidth: "40px", // 바 너비 고정 (px 단위 가능)
-          backgroundBarColors: ["#001f3f"], // 배경 바 색상 진하게
+          columnWidth,
+          distributed: true,
+          backgroundBarColors: ["#001f3f"],
         },
+      },
+      xaxis: {
+        ...barChartOptions.xaxis,
+        labels: {
+          ...barChartOptions.xaxis?.labels,
+          rotate: -45,
+          style: {
+            fontSize: "12px",
+            colors: "#ccc",
+          },
+        },
+      },
+      legend: {
+        show: false,
       },
     };
 
