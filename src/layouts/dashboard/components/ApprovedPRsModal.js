@@ -7,13 +7,14 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Table from "examples/Tables/Table";
 import VuiBox from "components/VuiBox";
 import Card from "@mui/material/Card";
 
-function ApprovedPRsModal({ open, onClose, approvedPRs }) {
+function ApprovedPRsModal({ open, onClose, approvedPRs = [], approved_pr_count = 0 }) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -25,7 +26,7 @@ function ApprovedPRsModal({ open, onClose, approvedPRs }) {
     { name: "pr_link", align: "left", label: "Repo URL" },
   ];
 
-  const rows = (approvedPRs || []).map((pr) => ({
+  const rows = approvedPRs.map((pr) => ({
     repo_name: (
       <span style={{ color: "#56C1FF", fontWeight: 600 }}>
         {pr?.repo_name ?? "Unknown"}
@@ -104,6 +105,22 @@ function ApprovedPRsModal({ open, onClose, approvedPRs }) {
 
         <DialogContent>
           <VuiBox mt={2}>
+            {/* 오른쪽 상단 카드 */}
+            <Box display="flex" justifyContent="flex-end" mb={1}>
+              <Box
+                sx={{
+                  backgroundColor: "#6c63ff !important",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  color: "#ffffff !important",
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                }}
+              >
+                Total Approved: {approved_pr_count}
+              </Box>
+            </Box>
+            {/* 테이블 */}
             <Table columns={columns} rows={rows} />
           </VuiBox>
         </DialogContent>
