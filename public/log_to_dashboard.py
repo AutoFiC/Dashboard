@@ -78,8 +78,11 @@ class DashboardBuilder:
                 pr["repo_name"] = pr["repo_url"].rstrip("/").split("/")[-1]
                 approved_prs.append(pr)
 
+        open_true_count = sum(1 for pr in prs if pr.get("opened") is True)
+
         return {
             "approved_pr_count": len(approved_prs),
+            "open_true_count": open_true_count,
             "approved_prs": approved_prs,
             "repoCount": len(repos),
             "vulnerabilityStats": {
