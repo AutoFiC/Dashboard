@@ -81,7 +81,7 @@ function Dashboard() {
         setDailyChartData([
           {
             name: "Daily PRs",
-            data: data.charts.dailyPRs.map(d => ({ x: d.x, y: d.y })),
+            data: data.charts.dailyPRs.slice(-7).map(d => ({ x: d.x, y: d.y })),
           },
         ]);
       })
