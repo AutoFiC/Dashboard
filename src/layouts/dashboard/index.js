@@ -30,6 +30,7 @@ function Dashboard() {
   const [vulnStats, setVulnStats] = useState(null);
   const [approvedPRs, setApprovedPRs] = useState([]);
   const [approvedPRCount, setApprovedPRCount] = useState(0);
+  const [openTrueCount, setOpenTrueCount] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
   const weeklyChartOptions = {
@@ -71,6 +72,7 @@ function Dashboard() {
         setVulnStats(data.vulnerabilityStats);
         setApprovedPRs(data.approved_prs || []);
         setApprovedPRCount(data.approved_pr_count || 0);
+        setOpenTrueCount(data.open_true_count || 0);
 
         setWeeklyChartData([
           { name: "Weekly PRs", data: data.charts.weeklyPRs },
@@ -99,7 +101,7 @@ function Dashboard() {
             <Grid item xs={12} md={5} lg={4}>
               <Card sx={{ height: "100%", minHeight: "200px" }}>
                 <MergeSuccessCountCard
-                  count={approvedPRCount}
+                  count={openTrueCount}
                   onOpen={() => setModalOpen(true)}
                 />
               </Card>
@@ -150,6 +152,7 @@ function Dashboard() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         approvedPRs={approvedPRs}
+        approved_pr_count={approvedPRCount}
       />
 
       <Footer />

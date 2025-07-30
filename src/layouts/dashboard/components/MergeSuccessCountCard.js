@@ -54,7 +54,7 @@ const MergeSuccessCountCard = ({ count = 0, onOpen }) => {
           fontWeight="bold"
           sx={{ color: "#ffffff", mt: 1.2, mb: 0.5 }}
         >
-          {count} PRs approved
+          {count} PRs under review
         </VuiTypography>
       </VuiBox>
 
